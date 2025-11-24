@@ -8,81 +8,88 @@
  */
 export function main(dtoIn) {
 
-    let count = dtoIn.count;
-    let ageMin = dtoIn.age.min;
-    let ageMax = dtoIn.age.max;
+  let count = dtoIn.count;
+  let minAge = dtoIn.age.min;
+  let maxAge = dtoIn.age.max;
 
-    // 50 zmiešaných mien (bez delenia na muž/žena)
-    const names = [
-        "Peter", "Martin", "Jakub", "Samuel", "Lukáš", "Michal", "Adam", "Tomáš", "Matej", "Dominik",
-        "Filip", "Patrik", "Andrej", "Daniel", "Erik", "Oliver", "Marek", "Sebastián", "Viktor", "Roman",
-        "Rastislav", "Boris", "Ján", "Šimon", "Dávid", "Karol", "Igor", "Norbert", "Gabriel", "Henrich",
-        "Lucia", "Kristína", "Natália", "Ema", "Sofia", "Laura", "Monika", "Zuzana", "Veronika", "Katarína",
-        "Eva", "Mária", "Barbora", "Petra", "Simona", "Nikola", "Tamara", "Viktória", "Paulína", "Lenka"
-    ];
+  const names = [
+    "Peter","Martin","Jakub","Samuel","Lukas","Michal","Adam","Tomas","Matej","Dominik",
+    "Filip","Patrik","Andrej","Daniel","Erik","Oliver","Marek","Sebastian","Viktor","Roman",
+    "Rastislav","Boris","Jan","Simon","David","Karol","Igor","Norbert","Gabriel","Henrich",
+    "Lucia","Kristina","Natalia","Ema","Sofia","Laura","Monika","Zuzana","Veronika","Katarina",
+    "Eva","Maria","Barbora","Petra","Simona","Nikola","Tamara","Viktoria","Paulina","Lenka"
+  ];
 
-    // 50 zmiešaných priezvisk
-    const surnames = [
-        "Novák", "Kováč", "Horváth", "Varga", "Tóth", "Kučera", "Marek", "Bartoš", "Urban", "Šimek",
-        "Král", "Klement", "Farkaš", "Klein", "Hruška", "Sokol", "Baran", "Roth", "Hlaváč", "Polák",
-        "Ford", "Keller", "Berger", "Černý", "Bielik",
-        "Nováková", "Kováčová", "Horváthová", "Vargová", "Tóthová",
-        "Kučerová", "Marková", "Bartošová", "Urbanová", "Šimková",
-        "Králová", "Klementová", "Farkašová", "Kleinová", "Hrušková",
-        "Sokolová", "Baranová", "Rothová", "Hlaváčová", "Poláková",
-        "Dostálová", "Veselá", "Hlavatá", "Kolárová", "Gregorová"
-    ];
+  const surnames = [
+    "Novak","Kovac","Horvath","Varga","Toth","Kucera","Marek","Bartok","Urban","Simek",
+    "Kral","Klement","Farkas","Klein","Hruska","Sokol","Baran","Roth","Hlavac","Polak",
+    "Ford","Keller","Berger","Cerny","Bielik",
+    "Novakova","Kovacova","Horvathova","Vargova","Tothova",
+    "Kucerova","Markova","Bartosova","Urbanova","Simkova",
+    "Kralova","Klementova","Farkasova","Kleinova","Hrusková",
+    "Sokolova","Baranova","Rothova","Hlavacova","Polakova"
+  ];
+
+  function pickRandom(list) {
+    let index = Math.floor(Math.random() * list.length);
+    return list[index];
+  }
+
+  let usedDates = new Set();
+
+  function generateBirthdate(minAge, maxAge) {
+    let birthdate;
+
+    do {
+      let today = new Date();
+
+      let latest = new Date(Date.UTC(
+        today.getUTCFullYear() - minAge,
+        today.getUTCMonth(),
+        today.getUTCDate()
+      ));
+
+      let earliest = new Date(Date.UTC(
+        today.getUTCFullYear() - maxAge,
+        today.getUTCMonth(),
+        today.getUTCDate()
+      ));
+
+      let minTime = earliest.getTime();
+      let maxTime = latest.getTime();
+
+      let randomTime = minTime + Math.random() * (maxTime - minTime);
+
+      let d = new Date(randomTime);
+      d.setUTCHours(0, 0, 0, 0);
+      birthdate = d.toISOString();
+
+    } while (usedDates.has(birthdate)); 
+
+    usedDates.add(birthdate);
+    return birthdate;
+  }
+
+  let people = [];
+
+  for (let i = 0; i < count; i++) {
+
+    let name = pickRandom(names);
+    let surname = pickRandom(surnames);
+    let birthdate = generateBirthdate(minAge, maxAge);
 
     let workloads = [10, 20, 30, 40];
+    let workload = pickRandom(workloads);
 
-    function pickRandom(list) {
-        const index = Math.floor(Math.random() * list.length);
-        return list[index];
-    }
+    let person = {
+      name: name,
+      surname: surname,
+      birthdate: birthdate,
+      workload: workload
+    };
 
-    // unikátne dátumy narodenia
-    let usedBirthdates = new Set();
+    people.push(person);
+  }
 
-    function generateBirthdate(minAge, maxAge, usedSet) {
-        let birthdate;
-
-        do {
-            const today = new Date();
-            const age = Math.floor(Math.random() * (maxAge - minAge + 1)) + minAge; // min..max (vrátane)
-            const year = today.getUTCFullYear() - age;
-            const month = Math.floor(Math.random() * 12);
-            const day = Math.floor(Math.random() * 28) + 1;
-
-            const d = new Date(Date.UTC(year, month, day));
-            d.setUTCHours(0, 0, 0, 0);
-            birthdate = d.toISOString();
-        } while (usedSet.has(birthdate));
-
-        usedSet.add(birthdate);
-        return birthdate;
-    }
-
-    let dtoOut = [];
-
-    for (let i = 0; i < count; i++) {
-        // gender môže ostať, aj keď mená sú zmiešané
-        let gender = Math.random() < 0.5 ? "male" : "female";
-
-        let name = pickRandom(names);
-        let surname = pickRandom(surnames);
-        let birthdate = generateBirthdate(ageMin, ageMax, usedBirthdates);
-        let workload = pickRandom(workloads);
-
-        let employee = {
-            gender: gender,
-            birthdate: birthdate,
-            name: name,
-            surname: surname,
-            workload: workload
-        };
-
-        dtoOut.push(employee);
-    }
-
-    return dtoOut;
+  return people;
 }
