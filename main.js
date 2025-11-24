@@ -37,22 +37,29 @@ export function main(dtoIn) {
         return list[index];
     }
 
-    function generateBirthdate(minAge, maxAge, usedBirthdates) {
+    let usedBirthdates = new Set();
+
+    function getAgeFromDate(date) {
+        let diffMs = Date.now() - date.getTime();
+        let years = diffMs / (365.25 * 24 * 60 * 60 * 1000);
+        return years;
+    }
+
+    function generateBirthdate(minAge, maxAge) {
         while (true) {
+            let age = minAge + Math.random() * (maxAge - minAge);
 
-            let today = new Date();
-            let randomAge = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
-            let year = today.getUTCFullYear() - randomAge;
-            let month = Math.floor(Math.random() * 12);
-            let day = Math.floor(Math.random() * 28) + 1;
-
-            let d = new Date(Date.UTC(year, month, day));
+            let diffMs = age * 365.25 * 24 * 60 * 60 * 1000;
+            let d = new Date(Date.now() - diffMs);
             d.setUTCHours(0, 0, 0, 0);
+
             let iso = d.toISOString();
 
-            if (usedBirthdates.has(iso)) continue;
+            if (usedBirthdates.has(iso)) {
+                continue;
+            }
 
-            let realAge = today.getUTCFullYear() - d.getUTCFullYear();
+            let realAge = getAgeFromDate(d);
             if (realAge > minAge && realAge < maxAge) {
                 usedBirthdates.add(iso);
                 return iso;
@@ -65,7 +72,6 @@ export function main(dtoIn) {
     for (let i = 0; i < count; i++) {
 
         let gender = Math.random() < 0.5 ? "male" : "female";
-
         let name = pickRandom(names);
         let surname = pickRandom(surnames);
         let birthdate = generateBirthdate(ageMin, ageMax);
