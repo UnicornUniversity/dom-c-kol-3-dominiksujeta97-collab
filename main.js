@@ -87,14 +87,3 @@ export function main(dtoIn) {
     }
     return dtoOut;
 }
-
-let dtoIn = {
-    count: 50,
-    age: {
-        min: 19,
-        max: 35
-    }
-};
-
-let dtoOut = main(dtoIn);
-console.log(dtoOut);
