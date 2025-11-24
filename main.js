@@ -26,23 +26,15 @@ export function main(dtoIn) {
         return list[index];
     }
 
-    function generateBirthdate(min, max) {
+    function generateBirthdate(minAge, maxAge) {
         let today = new Date();
-        let currentYear = today.getUTCFullYear();
-        let minYear = currentYear - max;
-        let maxYear = currentYear - min;
-        let randomYear = Math.random();
-        let year = Math.floor(randomYear * (maxYear - minYear + 1)) + minYear;
-
-        let randomMonth = Math.random();
-        let month = Math.floor(randomMonth * 12);
-
-        let randomDay = Math.random();
-        let day = Math.floor(randomDay * 28) + 1;
-
-        let date = new Date(Date.UTC(year, month, day));
-
-        return date.toISOString();
+        let maxYear = today.getFullYear() - minAge;
+        let minYear = today.getFullYear() - maxAge;
+        let randomYear = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
+        let randomMonth = Math.floor(Math.random() * 12);
+        let randomDay = Math.floor(Math.random() * 28) + 1;
+        let birthdate = new Date(Date.UTC(randomYear, randomMonth, randomDay));
+        return birthdate.toISOString();
     }
 
     let dtoOut = [];
