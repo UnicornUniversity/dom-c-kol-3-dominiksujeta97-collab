@@ -13,21 +13,21 @@ export function main(dtoIn) {
     let ageMax = dtoIn.age.max;
 
     let names = [
-        "Peter","Martin","Jakub","Samuel","Lukas","Michal","Adam","Tomas","Matej","Dominik",
-        "Filip","Patrik","Andrej","Daniel","Erik","Oliver","Marek","Sebastian","Viktor","Roman",
-        "Rastislav","Boris","Jan","Simon","David","Karol","Igor","Norbert","Gabriel","Henrich",
-        "Lucia","Kristina","Natalia","Ema","Sofia","Laura","Monika","Zuzana","Veronika","Katarina",
-        "Eva","Maria","Barbora","Petra","Simona","Nikola","Tamara","Viktoria","Paulina","Lenka"
+        "Peter", "Martin", "Jakub", "Samuel", "Lukas", "Michal", "Adam", "Tomas", "Matej", "Dominik",
+        "Filip", "Patrik", "Andrej", "Daniel", "Erik", "Oliver", "Marek", "Sebastian", "Viktor", "Roman",
+        "Rastislav", "Boris", "Jan", "Simon", "David", "Karol", "Igor", "Norbert", "Gabriel", "Henrich",
+        "Lucia", "Kristina", "Natalia", "Ema", "Sofia", "Laura", "Monika", "Zuzana", "Veronika", "Katarina",
+        "Eva", "Maria", "Barbora", "Petra", "Simona", "Nikola", "Tamara", "Viktoria", "Paulina", "Lenka"
     ];
 
     let surnames = [
-        "Novak","Kovac","Horvath","Varga","Toth","Kucera","Marek","Bartok","Urban","Simek",
-        "Kral","Klement","Farkas","Klein","Hruska","Sokol","Baran","Roth","Hlavac","Polak",
-        "Ford","Keller","Berger","Cerny","Bielik",
-        "Novakova","Kovacova","Horvathova","Vargova","Tothova",
-        "Kucerova","Markova","Bartosova","Urbanova","Simkova",
-        "Kralova","Klementova","Farkasova","Kleinova","Hruskova",
-        "Sokolova","Baranova","Rothova","Hlavacova","Polakova"
+        "Novak", "Kovac", "Horvath", "Varga", "Toth", "Kucera", "Marek", "Bartok", "Urban", "Simek",
+        "Kral", "Klement", "Farkas", "Klein", "Hruska", "Sokol", "Baran", "Roth", "Hlavac", "Polak",
+        "Ford", "Keller", "Berger", "Cerny", "Bielik",
+        "Novakova", "Kovacova", "Horvathova", "Vargova", "Tothova",
+        "Kucerova", "Markova", "Bartosova", "Urbanova", "Simkova",
+        "Kralova", "Klementova", "Farkasova", "Kleinova", "Hruskova",
+        "Sokolova", "Baranova", "Rothova", "Hlavacova", "Polakova"
     ];
 
     let workloads = [10, 20, 30, 40];
@@ -37,31 +37,28 @@ export function main(dtoIn) {
         return list[index];
     }
 
-    function generateBirthdate(minAge, maxAge) {
-    while (true) {
+    function generateBirthdate(minAge, maxAge, usedBirthdates) {
+        while (true) {
 
-        let today = new Date();
-        let randomAge = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
+            let today = new Date();
+            let randomAge = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
+            let year = today.getUTCFullYear() - randomAge;
+            let month = Math.floor(Math.random() * 12);
+            let day = Math.floor(Math.random() * 28) + 1;
 
-        let year = today.getUTCFullYear() - randomAge;
-        let month = Math.floor(Math.random() * 12);
-        let day = Math.floor(Math.random() * 28) + 1;
+            let d = new Date(Date.UTC(year, month, day));
+            d.setUTCHours(0, 0, 0, 0);
+            let iso = d.toISOString();
 
-        let d = new Date(Date.UTC(year, month, day));
-        d.setUTCHours(0, 0, 0, 0);
+            if (usedBirthdates.has(iso)) continue;
 
-        let iso = d.toISOString();
-
-        if (usedBirthdates.has(iso)) continue;
-
-        let realAge = today.getUTCFullYear() - d.getUTCFullYear();
-
-        if (realAge > minAge && realAge < maxAge) {
-            usedBirthdates.add(iso);
-            return iso;
+            let realAge = today.getUTCFullYear() - d.getUTCFullYear();
+            if (realAge > minAge && realAge < maxAge) {
+                usedBirthdates.add(iso);
+                return iso;
+            }
         }
     }
-}
 
     let dtoOut = [];
 
@@ -75,7 +72,7 @@ export function main(dtoIn) {
         let workload = pickRandom(workloads);
 
         let employee = {
-            gender: gender,      
+            gender: gender,
             birthdate: birthdate,
             name: name,
             surname: surname,
