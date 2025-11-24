@@ -27,17 +27,16 @@ export function main(dtoIn) {
     }
 
     function generateBirthdate(minAge, maxAge) {
-    let today = new Date();
-    let maxYear = today.getFullYear() - minAge;
-    let minYear = today.getFullYear() - maxAge - 1;
-    let randomYear = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
-    let randomMonth = Math.floor(Math.random() * 12);
-    let randomDay = Math.floor(Math.random() * 28) + 1;
-    let birthdate = new Date(Date.UTC(randomYear, randomMonth, randomDay));
-    birthdate.setUTCHours(0, 0, 0, 0); 
+        let today = new Date();
+        let age = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
+        let year = today.getUTCFullYear() - age;
+        let month = Math.floor(Math.random() * 12);
+        let day = Math.floor(Math.random() * 28) + 1;
+        let birthdate = new Date(Date.UTC(year, month, day));
+        birthdate.setUTCHours(0, 0, 0, 0);
 
-    return birthdate.toISOString();
-}
+        return birthdate.toISOString();
+    }
     let dtoOut = [];
     for (let i = 0; i < count; i++) {
 
