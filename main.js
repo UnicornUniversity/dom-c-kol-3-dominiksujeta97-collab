@@ -29,7 +29,7 @@ export function main(dtoIn) {
     function generateBirthdate(minAge, maxAge) {
     let today = new Date();
     let maxYear = today.getFullYear() - minAge;
-    let minYear = today.getFullYear() - maxAge;
+    let minYear = today.getFullYear() - maxAge - 1;
     let randomYear = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
     let randomMonth = Math.floor(Math.random() * 12);
     let randomDay = Math.floor(Math.random() * 28) + 1;
