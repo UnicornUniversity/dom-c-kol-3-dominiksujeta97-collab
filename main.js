@@ -8,7 +8,12 @@
  */
 export function main(dtoIn) {
 
+    let maxCount = 50;
     let count = dtoIn.count;
+    if (count > maxCount) {
+        count = maxCount;
+    }
+
     let ageMin = dtoIn.age.min;
     let ageMax = dtoIn.age.max;
 
@@ -61,6 +66,7 @@ export function main(dtoIn) {
 
         return birthdate.toISOString();
     }
+
     let dtoOut = [];
     for (let i = 0; i < count; i++) {
 
@@ -88,7 +94,6 @@ export function main(dtoIn) {
         }
 
         let birthdate = generateBirthdate(ageMin, ageMax);
-
         let workload = pickRandom(workloads);
 
         let employee = {
