@@ -34,6 +34,8 @@ export function main(dtoIn) {
     let randomMonth = Math.floor(Math.random() * 12);
     let randomDay = Math.floor(Math.random() * 28) + 1;
     let birthdate = new Date(Date.UTC(randomYear, randomMonth, randomDay));
+    birthdate.setUTCHours(0, 0, 0, 0); 
+
     return birthdate.toISOString();
 }
     let dtoOut = [];
