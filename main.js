@@ -12,7 +12,6 @@ export function main(dtoIn) {
     let ageMin = dtoIn.age.min;
     let ageMax = dtoIn.age.max;
 
-    // namiesto mužských/ženských mien dám jeden zoznam 50 mien
     let names = [
         "Peter","Martin","Jakub","Samuel","Lukas","Michal","Adam","Tomas","Matej","Dominik",
         "Filip","Patrik","Andrej","Daniel","Erik","Oliver","Marek","Sebastian","Viktor","Roman",
@@ -21,7 +20,6 @@ export function main(dtoIn) {
         "Eva","Maria","Barbora","Petra","Simona","Nikola","Tamara","Viktoria","Paulina","Lenka"
     ];
 
-    // jeden zoznam 50 priezvisk
     let surnames = [
         "Novak","Kovac","Horvath","Varga","Toth","Kucera","Marek","Bartok","Urban","Simek",
         "Kral","Klement","Farkas","Klein","Hruska","Sokol","Baran","Roth","Hlavac","Polak",
@@ -39,28 +37,19 @@ export function main(dtoIn) {
         return list[index];
     }
 
-    let usedDates = new Set();
+    const MS_IN_YEAR = 365.25 * 24 * 60 * 60 * 1000;
 
     function generateBirthdate(minAge, maxAge) {
-        let birth;
-
-        do {
-            let today = new Date();
-
-            let age = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
-
-            let year = today.getUTCFullYear() - age;
-            let month = Math.floor(Math.random() * 12);
-            let day = Math.floor(Math.random() * 28) + 1;
-
-            let date = new Date(Date.UTC(year, month, day));
-            date.setUTCHours(0, 0, 0, 0);
-
-            birth = date.toISOString();
-        } while (usedDates.has(birth));
-
-        usedDates.add(birth);
-        return birth;
+        while (true) {
+            let age = minAge + Math.random() * (maxAge - minAge);
+            let msAgo = age * MS_IN_YEAR;
+            let birthdate = new Date(Date.now() - msAgo);
+            birthdate.setUTCHours(0, 0, 0, 0);
+            let realAge = (Date.now() - birthdate.getTime()) / MS_IN_YEAR;
+            if (realAge > minAge && realAge < maxAge) {
+                return birthdate.toISOString();
+            }
+        }
     }
 
     let dtoOut = [];
