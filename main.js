@@ -37,20 +37,31 @@ export function main(dtoIn) {
         return list[index];
     }
 
-    const MS_IN_YEAR = 365.25 * 24 * 60 * 60 * 1000;
-
     function generateBirthdate(minAge, maxAge) {
-        while (true) {
-            let age = minAge + Math.random() * (maxAge - minAge);
-            let msAgo = age * MS_IN_YEAR;
-            let birthdate = new Date(Date.now() - msAgo);
-            birthdate.setUTCHours(0, 0, 0, 0);
-            let realAge = (Date.now() - birthdate.getTime()) / MS_IN_YEAR;
-            if (realAge > minAge && realAge < maxAge) {
-                return birthdate.toISOString();
-            }
+    while (true) {
+
+        let today = new Date();
+        let randomAge = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
+
+        let year = today.getUTCFullYear() - randomAge;
+        let month = Math.floor(Math.random() * 12);
+        let day = Math.floor(Math.random() * 28) + 1;
+
+        let d = new Date(Date.UTC(year, month, day));
+        d.setUTCHours(0, 0, 0, 0);
+
+        let iso = d.toISOString();
+
+        if (usedBirthdates.has(iso)) continue;
+
+        let realAge = today.getUTCFullYear() - d.getUTCFullYear();
+
+        if (realAge > minAge && realAge < maxAge) {
+            usedBirthdates.add(iso);
+            return iso;
         }
     }
+}
 
     let dtoOut = [];
 
