@@ -8,12 +8,7 @@
  */
 export function main(dtoIn) {
 
-    let maxCount = 50;
     let count = dtoIn.count;
-    if (count > maxCount) {
-        count = maxCount;
-    }
-
     let ageMin = dtoIn.age.min;
     let ageMax = dtoIn.age.max;
 
